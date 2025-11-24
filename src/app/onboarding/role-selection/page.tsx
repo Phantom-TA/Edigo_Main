@@ -50,7 +50,7 @@ export default function RoleSelectionPage() {
             Welcome to Edigo! 👋
           </h1>
           <p className="text-lg text-gray-600">
-            Let's get started by selecting your role
+            Let&apos;s get started by selecting your role
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export default function RoleSelectionPage() {
                 </div>
               )}
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">I'm a Teacher</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">I&apos;m a Teacher</h3>
             <p className="text-gray-600">
               Create and manage courses, upload course materials, and guide students through their learning journey.
             </p>
@@ -105,7 +105,7 @@ export default function RoleSelectionPage() {
                 </div>
               )}
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">I'm a Student</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">I&apos;m a Student</h3>
             <p className="text-gray-600">
               Browse courses, enroll in classes, create personalized learning plans, and track your progress.
             </p>

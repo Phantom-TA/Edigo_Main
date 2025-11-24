@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { getEnrolledCourses } from '@/lib/courses/enrollStudent';
 import Link from 'next/link';
 
 interface EnrolledCourse {
@@ -38,12 +37,17 @@ export default function MyCoursesPage() {
     try {
       setLoading(true);
 
-      // Get enrolled course IDs
-      const enrollments = await getEnrolledCourses(user.id);
+      // Get enrolled course IDs from API
+      const enrollmentResponse = await fetch('/api/courses/enrolled');
+      if (!enrollmentResponse.ok) {
+        throw new Error('Failed to fetch enrollments');
+      }
+      const enrollmentData = await enrollmentResponse.json();
+      const enrollments = enrollmentData.enrollments || [];
       setEnrolledCourses(enrollments);
 
       // Fetch details for each course
-      const courseIds = enrollments.map((e) => e.courseId);
+      const courseIds = enrollments.map((e: EnrolledCourse) => e.courseId);
       if (courseIds.length > 0) {
         // Fetch course details from your existing API
         const response = await fetch(
@@ -96,7 +100,7 @@ export default function MyCoursesPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-6">My Enrolled Courses</h1>
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg mb-4">
-            You haven't enrolled in any courses yet.
+            You haven&apos;t enrolled in any courses yet.
           </p>
           <Link
             href="/"

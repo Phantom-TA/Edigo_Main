@@ -1,9 +1,12 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
+import { useUser } from '@clerk/nextjs'
 import Header from '@/app/dashboard/_components/Header'
 import { getCourseById } from '../../action'
 import WeeklyRoadmap from './_components/WeeklyRoadmap'
+import ChatBot from '../_components/ChatBot'
+import { ArrowLeft } from 'lucide-react'
 
 interface Topic {
   topicName: string
@@ -28,9 +31,57 @@ interface CourseData {
 
 const RoadmapPage = () => {
   const params = useParams()
+  const router = useRouter()
+  const { user } = useUser()
   const courseId = params.courseid as string
   const [courseData, setCourseData] = useState<CourseData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [userRole, setUserRole] = useState<'TEACHER' | 'STUDENT' | null>(null)
+
+  useEffect(() => {
+    if (user) {
+      fetchUserRole();
+    }
+  }, [user]);
+
+  const fetchUserRole = async () => {
+    try {
+      const response = await fetch('/api/user/role');
+      if (response.ok) {
+        const data = await response.json();
+        setUserRole(data.role);
+      }
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+    }
+  };
+
+  const handleBackToDashboard = async () => {
+    // If role is not yet loaded, fetch it first
+    if (!userRole) {
+      try {
+        const response = await fetch('/api/user/role');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.role === 'STUDENT') {
+            router.push('/dashboard/my-courses');
+          } else {
+            router.push('/dashboard');
+          }
+          return;
+        }
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+      }
+    }
+
+    // Use cached role
+    if (userRole === 'STUDENT') {
+      router.push('/dashboard/my-courses');
+    } else {
+      router.push('/dashboard');
+    }
+  };
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -86,6 +137,17 @@ const RoadmapPage = () => {
     <div className="min-h-screen bg-white">
       <Header />
       <div className="max-w-4xl mx-auto px-4 py-12">
+        {/* Back Button */}
+        {user && (
+          <button
+            onClick={handleBackToDashboard}
+            className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 mb-6 transition-colors"
+          >
+            <ArrowLeft size={20} />
+            <span className="font-semibold">Back to Dashboard</span>
+          </button>
+        )}
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Roadmap</h1>
           <h2 className="text-xl text-gray-600 mb-1">{courseData.courseName}</h2>
@@ -95,6 +157,9 @@ const RoadmapPage = () => {
 
         <WeeklyRoadmap weeks={courseData.weeks} courseId={courseId} />
       </div>
+
+      {/* Chat Bot */}
+      {user && <ChatBot courseId={courseId} />}
     </div>
   )
 }

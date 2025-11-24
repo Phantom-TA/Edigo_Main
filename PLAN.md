@@ -169,40 +169,6 @@ Transform Edigo from a single-user course generator into a full teacher-student 
 
 ---
 
-## PHASE 5: Student Features - Course Discovery & Enrollment
-
-### 5.1 Browse Courses (Dashboard Home for Students)
-- Display all published courses (`isPublished = true`)
-- Show: Course card with "Enroll" button
-- Filters: Category, Level, Duration
-
-### 5.2 Course Preview Modal
-- On "Enroll" click: Show modal with:
-  - Course description (AI-enhanced summary)
-  - Week count, Topics covered
-  - Teacher name, Course rating (future)
-  - "Confirm Enrollment" button
-
-### 5.3 Enrollment Logic
-- Create enrollment record in `CourseEnrollments`
-- Add course to student's "My Courses"
-- Send notification to teacher (future)
-
-### 5.4 My Courses Route
-- New route: `/dashboard/my-courses`
-- Display enrolled courses only
-- Show progress percentage per course
-
-**Files to create/modify:**
-- Modify: `src/app/dashboard/page.tsx`
-- Create: `src/app/dashboard/_components/CoursePreviewModal.tsx`
-- Create: `src/app/dashboard/_components/EnrollButton.tsx`
-- Create: `src/app/dashboard/my-courses/page.tsx`
-- Create: `src/app/api/courses/enroll/route.ts`
-- Create: `src/lib/courses/enrollStudent.ts`
-
----
-
 ## PHASE 6: Real-Time Chat System (ClassBot)
 
 ### 6.1 Chat UI Component

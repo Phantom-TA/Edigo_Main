@@ -8,7 +8,11 @@ import { Progress } from "@/components/ui/progress"
 import { useUserCourseList } from '../../_context/UserCourseListContext';
 import { useUser } from '@clerk/nextjs';
 
-const Sidebar = () => {
+interface SidebarProps {
+    onNavigate?: () => void;
+}
+
+const Sidebar = ({ onNavigate }: SidebarProps) => {
     const { user } = useUser();
     const { userCourseList } = useUserCourseList();
     const [userRole, setUserRole] = useState<'TEACHER' | 'STUDENT' | null>(null);
@@ -102,14 +106,14 @@ const Sidebar = () => {
 
     const Menu = userRole === 'STUDENT' ? studentMenu : teacherMenu;
     return (
-        <div className='fixed h-full md:w-64 p-5 shadow-md'>
-            <Link href="/">
+        <div className='h-full w-64 p-5 shadow-md bg-white'>
+            <Link href="/" onClick={onNavigate}>
                 <Image src={"https://imgs.search.brave.com/keA2VmLtS4-75p6An8tv5vEB1ycHCtlHhpd-wTiZyeQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS12ZWN0b3Iv/Y29sb3JmdWwtbGV0/dGVyLWdyYWRpZW50/LWxvZ28tZGVzaWdu/XzQ3NDg4OC0yMzA5/LmpwZz9zZW10PWFp/c19oeWJyaWQmdz03/NDA"} alt='logo' width={50} height={60} className="cursor-pointer"></Image>
             </Link>
             <hr className='my-5'></hr>
             <ul>
                 {Menu.map((item) => (
-                    <Link href={item.path} key={item.path}>
+                    <Link href={item.path} key={item.path} onClick={onNavigate}>
                         <li
                             className={`flex items-center gap-6 text-gray-500 p-3 cursor-pointer hover:bg-gray-300 hover:text-black rounded ${item.path === path ? 'bg-gray-200 text-black' : ''}`}
                         >

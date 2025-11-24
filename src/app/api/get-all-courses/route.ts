@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/app/_configs/db';
 import { CourseList } from '@/app/_configs/Schema';
-import { eq, inArray, or } from 'drizzle-orm';
+import { inArray } from 'drizzle-orm';
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const publishedOnly = searchParams.get('published') === 'true';
     const idsParam = searchParams.get('ids');
-
-    let query = db.select().from(CourseList);
 
     // Filter by IDs if provided (for enrolled courses)
     if (idsParam) {
@@ -34,7 +32,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Return all courses
-    const courses = await query;
+    const courses = await db.select().from(CourseList);
     return NextResponse.json(courses);
   } catch (error) {
     console.error('Error fetching courses:', error);

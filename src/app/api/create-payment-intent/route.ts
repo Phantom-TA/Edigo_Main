@@ -1,11 +1,22 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-06-30.basil',
-});
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
+
+const stripe = stripeSecretKey
+  ? new Stripe(stripeSecretKey, {
+      apiVersion: '2025-06-30.basil',
+    })
+  : null;
 
 export async function POST(req: Request) {
+  if (!stripe) {
+    return NextResponse.json(
+      { error: 'Stripe is not configured' },
+      { status: 500 }
+    );
+  }
+
   const { amount } = await req.json();
   try {
     const paymentIntent = await stripe.paymentIntents.create({

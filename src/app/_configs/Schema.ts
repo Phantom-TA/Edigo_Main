@@ -41,6 +41,8 @@ export const CourseChats = pgTable('courseChats', {
     id: serial('id').primaryKey(),
     courseId: varchar('courseId', { length: 255 }).notNull(),
     senderId: integer('senderId').notNull(), // references Users.id
+    senderName: varchar('senderName', { length: 255 }),
+    senderImage: varchar('senderImage', { length: 500 }),
     message: text('message').notNull(),
     createdAt: timestamp('createdAt').defaultNow().notNull(),
     isRead: boolean('isRead').default(false)

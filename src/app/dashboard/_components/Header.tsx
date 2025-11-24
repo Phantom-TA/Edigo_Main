@@ -4,13 +4,29 @@ import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { Menu } from 'lucide-react'
 
-const Header = () => {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+const Header = ({ onMenuClick }: HeaderProps) => {
   const { user, isLoaded } = useUser();
 
   return (
     <div className='flex justify-between p-5 shadow-sm items-center'>
-      <div>
+      <div className="flex items-center gap-3">
+        {/* Hamburger Menu - Only show when user is logged in */}
+        {user && onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Toggle menu"
+          >
+            <Menu size={24} className="text-gray-700" />
+          </button>
+        )}
+
         <Link href="/">
           <Image
             src="https://imgs.search.brave.com/keA2VmLtS4-75p6An8tv5vEB1ycHCtlHhpd-wTiZyeQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS12ZWN0b3Iv/Y29sb3JmdWwtbGV0/dGVyLWdyYWRpZW50/LWxvZ28tZGVzaWdu/XzQ3NDg4OC0yMzA5/LmpwZz9zZW10PWFp/c19oeWJyaWQmdz03/NDA"
