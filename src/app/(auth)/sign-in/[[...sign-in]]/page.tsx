@@ -5,10 +5,9 @@ export default function SignInPage() {
     <div className="flex h-screen">
       {/* Left Side */}
       <div className="hidden md:flex w-1/2 bg-gray-900 text-white flex-col justify-center items-center p-10">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Squid 🐙</h1>
+        <h1 className="text-4xl font-bold mb-4">Welcome Back to Edigo 🎓</h1>
         <p className="max-w-md text-gray-300 text-center">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eligendi nam
-          dolorum aliquam, quibusdam aperiam voluptatum.
+          Continue your learning journey or manage your courses. Sign in to access your personalized dashboard.
         </p>
       </div>
 

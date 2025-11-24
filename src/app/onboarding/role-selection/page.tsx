@@ -29,8 +29,8 @@ export default function RoleSelectionPage() {
       });
 
       if (response.ok) {
-        // Redirect based on role
-        router.push('/dashboard');
+        // Redirect to home page
+        router.push('/');
       } else {
         alert('Failed to set role. Please try again.');
         setLoading(false);

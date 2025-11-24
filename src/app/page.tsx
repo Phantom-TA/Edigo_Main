@@ -1,14 +1,83 @@
+"use client"
 import React from 'react'
-import Header from "./_components/Header" 
-import Hero from './_components/Hero'
+import Header from "./_components/Header"
+import BrowseCourses from './dashboard/_components/BrowseCourses'
+import { Button } from '@/components/ui/button'
+import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function Home(){
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
+
   return (
-    <div>
-      {/*HEADER*/}
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       <Header/>
-      <Hero></Hero>
-      {/* Hero Section */}
+
+      {/* Hero Section with Auth Buttons */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {!isLoaded ? (
+          <div className="bg-white border border-violet-200 rounded-lg shadow-lg p-8 mb-8 flex items-center justify-center">
+            <div className="animate-pulse text-violet-700">Loading...</div>
+          </div>
+        ) : !user ? (
+          // Show sign-in/sign-up for unauthenticated users
+          <div className="bg-gradient-to-r from-violet-100 to-purple-100 border border-violet-200 rounded-2xl shadow-2xl p-12 mb-12">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-violet-700 mb-4">
+                Welcome to Edigo
+              </h1>
+              <p className="text-violet-600 mb-8 text-lg md:text-xl max-w-3xl mx-auto">
+                Unlock your learning with customized AI courses. Create AI-powered courses as a teacher or discover and enroll in courses as a student.
+              </p>
+              <div className="flex gap-4 justify-center flex-wrap">
+                <Link href="/sign-in">
+                  <Button className="px-10 py-4 text-lg font-semibold rounded-full bg-violet-600 text-white hover:bg-violet-700 transition-colors shadow-lg">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/sign-up">
+                  <Button className="px-10 py-4 text-lg font-semibold rounded-full bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-lg">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : (
+          // Show welcome message for authenticated users
+          <div className="bg-white border border-violet-200 rounded-2xl shadow-lg p-8 mb-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="mb-4 md:mb-0">
+                <h2 className="text-3xl font-bold text-violet-700">
+                  Hello, <span className="uppercase">{user?.fullName || user?.username}</span>!
+                </h2>
+                <p className="text-violet-600 mt-2 text-lg">
+                  Create new courses with AI, share with friends, and earn from your knowledge
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => router.push('/dashboard')}
+                  className="px-8 py-4 text-lg font-semibold rounded-full bg-violet-600 text-white hover:bg-violet-700 transition-colors shadow-md"
+                >
+                  My Dashboard
+                </Button>
+                <Button
+                  onClick={() => router.push('/create-course-simple')}
+                  className="px-8 py-4 text-lg font-semibold rounded-full bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-md"
+                >
+                  + Create Course
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Browse Courses Section */}
+        <BrowseCourses />
+      </div>
     </div>
   )
 }

@@ -33,13 +33,20 @@ const StepperOptions = [
 ]
 
 const CreateCourse = () => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const [activeIndex, setActiveIndex] = useState(0)
   const context = useContext(UserInputContext);
   const [loading, setLoading] = useState(false);
   if (!context) throw new Error('UserInputContext.Provider is missing');
   const { userCourseInput } = context;
   const router = useRouter()
+
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (isLoaded && !user) {
+      router.push('/');
+    }
+  }, [isLoaded, user, router]);
 
   const GenerateCourseLayout = async () => {
     setLoading(true);
@@ -64,6 +71,15 @@ const CreateCourse = () => {
   }
 
   useEffect(() => { }, [userCourseInput])
+
+  // Show loading while checking authentication
+  if (!isLoaded || !user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center">
+        <div className="animate-pulse text-violet-700 text-xl">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100">

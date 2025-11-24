@@ -46,6 +46,21 @@ export const CourseChats = pgTable('courseChats', {
     isRead: boolean('isRead').default(false)
 });
 
+// ===== PHASE 3: Student Progress Tracking =====
+
+// Student Exam Scores table
+export const StudentExamScores = pgTable('studentExamScores', {
+    id: serial('id').primaryKey(),
+    studentId: integer('studentId').notNull(), // references Users.id
+    courseId: varchar('courseId', { length: 255 }).notNull(),
+    quiz1Score: integer('quiz1Score'), // nullable, score out of 100
+    quiz2Score: integer('quiz2Score'), // nullable, score out of 100
+    midSemScore: integer('midSemScore'), // nullable, score out of 100
+    endSemScore: integer('endSemScore'), // nullable, score out of 100
+    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').defaultNow().notNull()
+});
+
 // ===== EXISTING TABLES (with Phase 1 enhancements) =====
 
 export const CourseList = pgTable('courseList', {

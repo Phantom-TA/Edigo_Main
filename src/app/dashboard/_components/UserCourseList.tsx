@@ -26,6 +26,8 @@ interface Course {
   name: string;
   includeVideo?: string;
   level?: string;
+  publish?: boolean;
+  isPublished?: boolean;
   courseOutput?: CourseOutput;
 }
 
@@ -34,38 +36,41 @@ const UserCourseList = () => {
   const { userCourseList, setUserCourseList } = useUserCourseList();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      if (user && user.fullName) {
-        setLoading(true);
-        try {
-          const res = await fetch(
-            `/api/get-user-courses?fullName=${encodeURIComponent(user.fullName)}`
-          );
-          const data = await res.json();
+  const fetchCourses = async () => {
+    if (user && user.fullName) {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/get-user-courses?fullName=${encodeURIComponent(user.fullName)}`
+        );
+        const data = await res.json();
 
-          const normalizedCourses: Course[] = Array.isArray(data)
-            ? data.map((c) => ({
-              courseId: c.courseId ?? "",
-              courseBanner: c.courseBanner ?? "",
-              name: c.name ?? "",
-              includeVideo: c.includeVideo,
-              level: c.level,
-              courseOutput: c.courseOutput ?? {},
-            }))
-            : [];
+        const normalizedCourses: Course[] = Array.isArray(data)
+          ? data.map((c) => ({
+            courseId: c.courseId ?? "",
+            courseBanner: c.courseBanner ?? "",
+            name: c.name ?? "",
+            includeVideo: c.includeVideo,
+            level: c.level,
+            publish: c.publish,
+            isPublished: c.isPublished,
+            courseOutput: c.courseOutput ?? {},
+          }))
+          : [];
 
-          setUserCourseList(normalizedCourses);
-        } catch (error) {
-          console.error("Error fetching courses:", error);
-          setUserCourseList([]);
-        } finally {
-          setLoading(false);
-        }
-      } else {
+        setUserCourseList(normalizedCourses);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        setUserCourseList([]);
+      } finally {
         setLoading(false);
       }
-    };
+    } else {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCourses();
   }, [user, setUserCourseList]);
 
@@ -81,7 +86,7 @@ const UserCourseList = () => {
       ) : userCourseList.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {userCourseList.map((course, idx) => (
-            <CourseCard key={idx} course={course as any} />
+            <CourseCard key={idx} course={course as any} refreshCourses={fetchCourses} />
           ))}
         </div>
       ) : (

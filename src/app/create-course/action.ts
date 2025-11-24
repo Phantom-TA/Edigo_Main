@@ -118,3 +118,20 @@ export const GetCourseContent = async (courseId: string) => {
     throw error;
   }
 };
+
+export const PublishCourse = async (courseId: string, publish: boolean) => {
+  try {
+    await db
+      .update(CourseList)
+      .set({
+        publish: publish,
+        isPublished: publish
+      })
+      .where(eq(CourseList.courseId, courseId));
+
+    return true;
+  } catch (error) {
+    console.error('Error publishing course:', error);
+    return false;
+  }
+};

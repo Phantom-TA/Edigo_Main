@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from '../dashboard/_components/Header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { GenerateAndSaveCourse } from './action'
 
 const CreateCourseSimple = () => {
-  const { user } = useUser()
+  const { user, isLoaded } = useUser()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -36,6 +36,13 @@ const CreateCourseSimple = () => {
       }))
     }
   }
+
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (isLoaded && !user) {
+      router.push('/');
+    }
+  }, [isLoaded, user, router]);
 
   const handleGenerate = async () => {
     if (!formData.title || !formData.duration) {
@@ -70,6 +77,15 @@ const CreateCourseSimple = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Show loading while checking authentication
+  if (!isLoaded || !user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-pulse text-violet-700 text-xl">Loading...</div>
+      </div>
+    );
   }
 
   return (
