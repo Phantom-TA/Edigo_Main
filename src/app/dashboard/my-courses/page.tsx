@@ -68,14 +68,39 @@ export default function MyCoursesPage() {
 
   const getProgressPercentage = (courseId: string) => {
     const enrollment = enrolledCourses.find((e) => e.courseId === courseId);
-    if (!enrollment || !enrollment.progress) return 0;
+    const course = coursesDetails.find((c) => c.courseId === courseId);
 
-    // Calculate progress based on completed chapters
+    if (!enrollment || !course || !course.courseOutput) return 0;
+
+    // Calculate total topics from course structure
+    let totalTopics = 0;
+    const courseData = typeof course.courseOutput === 'string'
+      ? JSON.parse(course.courseOutput)
+      : course.courseOutput;
+
+    if (courseData.weeks && Array.isArray(courseData.weeks)) {
+      courseData.weeks.forEach((week: any) => {
+        if (week.topics && Array.isArray(week.topics)) {
+          totalTopics += week.topics.length;
+        }
+      });
+    }
+
+    if (totalTopics === 0) return 0;
+
+    // Count completed topics from progress
     const progress = enrollment.progress as any;
-    const completed = Object.values(progress).filter((v) => v === true).length;
-    const total = Object.keys(progress).length;
+    let completedTopics = 0;
 
-    return total > 0 ? Math.round((completed / total) * 100) : 0;
+    if (progress && typeof progress === 'object') {
+      Object.entries(progress).forEach(([key, value]) => {
+        if (value === true) {
+          completedTopics++;
+        }
+      });
+    }
+
+    return Math.round((completedTopics / totalTopics) * 100);
   };
 
   if (loading) {

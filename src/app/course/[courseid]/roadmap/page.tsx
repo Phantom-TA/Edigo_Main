@@ -37,6 +37,7 @@ const RoadmapPage = () => {
   const [courseData, setCourseData] = useState<CourseData | null>(null)
   const [loading, setLoading] = useState(true)
   const [userRole, setUserRole] = useState<'TEACHER' | 'STUDENT' | null>(null)
+  const [progressPercentage, setProgressPercentage] = useState(0)
 
   useEffect(() => {
     if (user) {
@@ -92,6 +93,7 @@ const RoadmapPage = () => {
             ? JSON.parse(result[0].courseOutput)
             : result[0].courseOutput
           setCourseData(parsedData)
+          calculateProgress(parsedData)
         }
       } catch (error) {
         console.error('Error fetching course:', error)
@@ -102,6 +104,42 @@ const RoadmapPage = () => {
 
     fetchCourse()
   }, [courseId])
+
+  const calculateProgress = async (data: CourseData) => {
+    if (!user || !data) return
+
+    try {
+      const response = await fetch(`/api/courses/progress?courseId=${courseId}`)
+      if (response.ok) {
+        const { progress } = await response.json()
+
+        // Count total topics
+        let totalTopics = 0
+        let completedTopics = 0
+
+        data.weeks.forEach((week) => {
+          week.topics.forEach((_, topicIndex) => {
+            totalTopics++
+            const progressKey = `week_${week.weekNumber}_topic_${topicIndex}`
+            if (progress[progressKey]) {
+              completedTopics++
+            }
+          })
+        })
+
+        const percentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0
+        setProgressPercentage(percentage)
+      }
+    } catch (error) {
+      console.error('Error calculating progress:', error)
+    }
+  }
+
+  const handleProgressChange = () => {
+    if (courseData) {
+      calculateProgress(courseData)
+    }
+  }
 
   if (loading) {
     return (
@@ -153,9 +191,29 @@ const RoadmapPage = () => {
           <h2 className="text-xl text-gray-600 mb-1">{courseData.courseName}</h2>
           <p className="text-sm text-gray-500">{courseData.description}</p>
           <p className="text-sm text-gray-500 mt-1">Duration: {courseData.duration}</p>
+
+          {/* Progress Bar */}
+          {user && (
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-gray-700">Your Progress</span>
+                <span className="text-sm font-bold text-indigo-600">{progressPercentage}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div
+                  className="bg-indigo-600 h-3 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${progressPercentage}%` }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
-        <WeeklyRoadmap weeks={courseData.weeks} courseId={courseId} />
+        <WeeklyRoadmap
+          weeks={courseData.weeks}
+          courseId={courseId}
+          onProgressChange={handleProgressChange}
+        />
       </div>
 
       {/* Chat Bot */}

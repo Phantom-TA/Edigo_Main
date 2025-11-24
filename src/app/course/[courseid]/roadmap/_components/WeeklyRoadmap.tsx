@@ -19,9 +19,10 @@ interface Week {
 interface WeeklyRoadmapProps {
   weeks: Week[]
   courseId: string
+  onProgressChange?: () => void
 }
 
-const WeeklyRoadmap: React.FC<WeeklyRoadmapProps> = ({ weeks, courseId }) => {
+const WeeklyRoadmap: React.FC<WeeklyRoadmapProps> = ({ weeks, courseId, onProgressChange }) => {
   const [openWeek, setOpenWeek] = useState<number | null>(null)
 
   const toggleWeek = (weekNumber: number) => {
@@ -66,6 +67,7 @@ const WeeklyRoadmap: React.FC<WeeklyRoadmapProps> = ({ weeks, courseId }) => {
                     courseId={courseId}
                     weekNumber={week.weekNumber}
                     topicIndex={idx}
+                    onProgressChange={onProgressChange}
                   />
                 ))}
               </div>
