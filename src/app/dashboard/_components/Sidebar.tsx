@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
-import { HiFolderOpen, HiHome, HiOutlineGift, HiOutlineXCircle, HiAcademicCap } from "react-icons/hi";
+import { HiFolderOpen, HiHome, HiOutlineGift, HiOutlineXCircle, HiAcademicCap, HiDocumentText, HiHeart } from "react-icons/hi";
 import { Progress } from "@/components/ui/progress"
 import { useUserCourseList } from '../../_context/UserCourseListContext';
 import { useUser } from '@clerk/nextjs';
@@ -59,12 +59,24 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
         },
         {
             id: 4,
+            name: 'AI Chat',
+            icon: <HiDocumentText />,
+            path: '/dashboard/ai-chat'
+        },
+        {
+            id: 5,
+            name: 'Wellness',
+            icon: <HiHeart />,
+            path: '/dashboard/wellness'
+        },
+        {
+            id: 6,
             name: 'Upgrade',
             icon: <HiOutlineGift />,
             path: '/dashboard/upgrade'
         },
         {
-            id: 5,
+            id: 7,
             name: 'Logout',
             icon: <HiOutlineXCircle />,
             path: '/dashboard/logout'
@@ -92,12 +104,24 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
         },
         {
             id: 4,
+            name: 'AI Chat',
+            icon: <HiDocumentText />,
+            path: '/dashboard/ai-chat'
+        },
+        {
+            id: 5,
+            name: 'Wellness',
+            icon: <HiHeart />,
+            path: '/dashboard/wellness'
+        },
+        {
+            id: 6,
             name: 'Upgrade',
             icon: <HiOutlineGift />,
             path: '/dashboard/upgrade'
         },
         {
-            id: 5,
+            id: 7,
             name: 'Logout',
             icon: <HiOutlineXCircle />,
             path: '/dashboard/logout'
