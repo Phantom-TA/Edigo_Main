@@ -5,6 +5,7 @@ import { useUser } from '@clerk/nextjs'
 import Header from '@/app/dashboard/_components/Header'
 import { getCourseById } from '../../action'
 import WeeklyRoadmap from './_components/WeeklyRoadmap'
+import QuizzesTab from './_components/QuizzesTab'
 import ChatBot from '../_components/ChatBot'
 import { ArrowLeft } from 'lucide-react'
 
@@ -38,6 +39,7 @@ const RoadmapPage = () => {
   const [loading, setLoading] = useState(true)
   const [userRole, setUserRole] = useState<'TEACHER' | 'STUDENT' | null>(null)
   const [progressPercentage, setProgressPercentage] = useState(0)
+  const [activeTab, setActiveTab] = useState<'roadmap' | 'quizzes'>('roadmap')
 
   useEffect(() => {
     if (user) {
@@ -186,14 +188,39 @@ const RoadmapPage = () => {
           </button>
         )}
 
+        {/* Tab Navigation */}
+        <div className="mb-6">
+          <div className="flex gap-4 border-2 border-gray-800 rounded-lg overflow-hidden w-fit">
+            <button
+              onClick={() => setActiveTab('roadmap')}
+              className={`px-8 py-3 font-bold text-lg transition-colors ${
+                activeTab === 'roadmap'
+                  ? 'bg-gray-800 text-white'
+                  : 'bg-white text-gray-800 hover:bg-gray-100'
+              }`}
+            >
+              Roadmap
+            </button>
+            <button
+              onClick={() => setActiveTab('quizzes')}
+              className={`px-8 py-3 font-bold text-lg transition-colors ${
+                activeTab === 'quizzes'
+                  ? 'bg-gray-800 text-white'
+                  : 'bg-white text-gray-800 hover:bg-gray-100'
+              }`}
+            >
+              Quizzes
+            </button>
+          </div>
+        </div>
+
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Roadmap</h1>
           <h2 className="text-xl text-gray-600 mb-1">{courseData.courseName}</h2>
           <p className="text-sm text-gray-500">{courseData.description}</p>
           <p className="text-sm text-gray-500 mt-1">Duration: {courseData.duration}</p>
 
-          {/* Progress Bar */}
-          {user && (
+          {/* Progress Bar - Only show on Roadmap tab */}
+          {user && activeTab === 'roadmap' && (
             <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-semibold text-gray-700">Your Progress</span>
@@ -209,11 +236,16 @@ const RoadmapPage = () => {
           )}
         </div>
 
-        <WeeklyRoadmap
-          weeks={courseData.weeks}
-          courseId={courseId}
-          onProgressChange={handleProgressChange}
-        />
+        {/* Conditional Content Based on Active Tab */}
+        {activeTab === 'roadmap' ? (
+          <WeeklyRoadmap
+            weeks={courseData.weeks}
+            courseId={courseId}
+            onProgressChange={handleProgressChange}
+          />
+        ) : (
+          <QuizzesTab courseId={courseId} />
+        )}
       </div>
 
       {/* Chat Bot */}

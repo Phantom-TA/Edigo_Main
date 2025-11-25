@@ -8,8 +8,6 @@ interface StudentProgressProps {
 }
 
 interface ExamScores {
-  quiz1Score: number | null;
-  quiz2Score: number | null;
   midSemScore: number | null;
   endSemScore: number | null;
 }
@@ -17,8 +15,6 @@ interface ExamScores {
 export default function StudentProgress({ courseId }: StudentProgressProps) {
   const { user } = useUser();
   const [scores, setScores] = useState<ExamScores>({
-    quiz1Score: null,
-    quiz2Score: null,
     midSemScore: null,
     endSemScore: null,
   });
@@ -44,8 +40,6 @@ export default function StudentProgress({ courseId }: StudentProgressProps) {
 
   const calculateOverallProgress = () => {
     const scores_array = [
-      scores.quiz1Score,
-      scores.quiz2Score,
       scores.midSemScore,
       scores.endSemScore,
     ].filter((score) => score !== null) as number[];
@@ -95,18 +89,6 @@ export default function StudentProgress({ courseId }: StudentProgressProps) {
 
       {/* Individual Exam Scores */}
       <div className="grid grid-cols-2 gap-4">
-        <ExamCard
-          title="Quiz 1"
-          score={scores.quiz1Score}
-          maxScore={100}
-          icon="📝"
-        />
-        <ExamCard
-          title="Quiz 2"
-          score={scores.quiz2Score}
-          maxScore={100}
-          icon="📝"
-        />
         <ExamCard
           title="Mid-Sem"
           score={scores.midSemScore}

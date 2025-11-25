@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { useUser } from '@clerk/nextjs'
+import QuizModal from './QuizModal'
 
 interface Topic {
   topicName: string
@@ -39,6 +40,7 @@ const TopicItem: React.FC<TopicItemProps> = ({
   const [videos, setVideos] = useState<YouTubeVideo[]>([])
   const [videosLoading, setVideosLoading] = useState(false)
   const [showVideos, setShowVideos] = useState(false)
+  const [showQuizModal, setShowQuizModal] = useState(false)
 
   useEffect(() => {
     // Load completion status from database
@@ -157,7 +159,7 @@ const TopicItem: React.FC<TopicItemProps> = ({
           <div className="flex flex-wrap gap-3">
             {/* Test Quiz Link */}
             <button
-              onClick={() => alert(`Test Quiz: ${topic.testQuizPrompt}`)}
+              onClick={() => setShowQuizModal(true)}
               className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             >
               📝 Test Quiz
@@ -205,6 +207,16 @@ const TopicItem: React.FC<TopicItemProps> = ({
           )}
         </div>
       </div>
+
+      {/* Quiz Modal */}
+      <QuizModal
+        isOpen={showQuizModal}
+        onClose={() => setShowQuizModal(false)}
+        topicName={topic.topicName}
+        description={topic.description}
+        courseId={courseId}
+        weekNumber={weekNumber}
+      />
     </div>
   )
 }

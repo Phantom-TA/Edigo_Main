@@ -63,6 +63,20 @@ export const StudentExamScores = pgTable('studentExamScores', {
     updatedAt: timestamp('updatedAt').defaultNow().notNull()
 });
 
+// Quiz Results table - stores individual quiz attempts
+export const QuizResults = pgTable('quizResults', {
+    id: serial('id').primaryKey(),
+    studentId: integer('studentId').notNull(), // references Users.id
+    courseId: varchar('courseId', { length: 255 }).notNull(),
+    topicName: varchar('topicName', { length: 500 }).notNull(),
+    weekNumber: integer('weekNumber'),
+    score: integer('score').notNull(), // number of correct answers
+    totalQuestions: integer('totalQuestions').notNull(), // total questions in quiz
+    percentage: integer('percentage').notNull(), // calculated percentage
+    quizData: json('quizData'), // stores the full quiz questions and user answers
+    completedAt: timestamp('completedAt').defaultNow().notNull()
+});
+
 // ===== EXISTING TABLES (with Phase 1 enhancements) =====
 
 export const CourseList = pgTable('courseList', {
