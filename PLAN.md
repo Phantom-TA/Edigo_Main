@@ -212,7 +212,7 @@ Transform Edigo from a single-user course generator into a full teacher-student 
 ## PHASE 7: Student Learning Plan Creation (Only visible to STUDENT user, Auto added to enrolled courses)
 
 ### 7.1 Create Learning Plan Form
-- New route: `/dashboard/create-learning-plan`
+- New route: `/create-learning-plan`
 - Form fields (per reference image):
   - Trending Domains (dropdown with suggestions)
   - Duration (in hours)
@@ -226,7 +226,7 @@ Transform Edigo from a single-user course generator into a full teacher-student 
 - Store in `StudentLearningPlans` table
 
 ### 7.3 Display Learning Plans
-- View in `/dashboard/my-learning-plans`
+- View in `/dashboard/my-courses`
 - Show week-by-week breakdown (similar to course roadmap)
 - Progress tracking with checkboxes
 - Recommended resources (YouTube videos, articles)

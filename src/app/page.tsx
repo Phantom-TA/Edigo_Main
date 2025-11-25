@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from "./_components/Header"
 import BrowseCourses from './dashboard/_components/BrowseCourses'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,33 @@ import Link from 'next/link'
 export default function Home(){
   const { user, isLoaded } = useUser();
   const router = useRouter();
+  const [userRole, setUserRole] = useState<'TEACHER' | 'STUDENT' | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserRole();
+    }
+  }, [user]);
+
+  const fetchUserRole = async () => {
+    try {
+      const response = await fetch('/api/user/role');
+      if (response.ok) {
+        const data = await response.json();
+        setUserRole(data.role);
+      }
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+    }
+  };
+
+  const handleCreateClick = () => {
+    if (userRole === 'STUDENT') {
+      router.push('/dashboard/create-learning-plan');
+    } else {
+      router.push('/create-course-simple');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
@@ -65,10 +92,10 @@ export default function Home(){
                   My Dashboard
                 </Button>
                 <Button
-                  onClick={() => router.push('/create-course-simple')}
+                  onClick={handleCreateClick}
                   className="px-8 py-4 text-lg font-semibold rounded-full bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-md"
                 >
-                  + Create Course
+                  {userRole === 'STUDENT' ? '+ Create Learning Plan' : '+ Create Course'}
                 </Button>
               </div>
             </div>
